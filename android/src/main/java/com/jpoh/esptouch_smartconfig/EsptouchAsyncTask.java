@@ -74,24 +74,6 @@ private static final String TAG = "EspTouchAsyncTask";
     }
 
     @Override
-    protected void onProgressUpdate(IEsptouchResult... values) {
-//        EspTouchActivity activity = mActivity.get();
-//        if (activity != null) {
-//            IEsptouchResult result = values[0];
-//            Log.i(TAG, "EspTouchResult: " + result);
-//            String text = result.getBssid() + " is connected to the wifi";
-//            Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
-//
-//            activity.mBinding.testResult.append(String.format(
-//                    Locale.ENGLISH,
-//                    "%s,%s\n",
-//                    result.getInetAddress().getHostAddress(),
-//                    result.getBssid()
-//            ));
-//        }
-    }
-
-    @Override
     protected List<IEsptouchResult> doInBackground(String... params) {
 //        EspTouchActivity activity = mActivity.get();
         int taskResultCount;
@@ -105,28 +87,37 @@ private static final String TAG = "EspTouchAsyncTask";
 //            Context context = activity.getApplicationContext();
             mEsptouchTask = new EsptouchTask(apSsid, apBssid, apPassword, context);
             mEsptouchTask.setPackageBroadcast(true);
-        }
             mEsptouchTask.setEsptouchListener(new IEsptouchListener() {
-          @Override
-          public void onEsptouchResultAdded(IEsptouchResult esptouchResult) {
-            Log.d(TAG, "Received result: " + esptouchResult);
-            if (!esptouchResult.isSuc()) {
-              // TODO: Handle errors better. For that, I need to reproduce this error
-              // and see what is sent to the Dart code first.
-              final String msg = "Received unsuccessful result: " + esptouchResult;
-              Log.e(TAG, msg);
-              eventSink.error(msg, msg, null);
-              return;
-            }
-            Map<String, String> result = new HashMap<>();
-            result.put("bssid", esptouchResult.getBssid());
-            result.put("ip", esptouchResult.getInetAddress().getHostAddress());
-            eventSink.success(result);
-          }
-        });
+                @Override
+                public void onEsptouchResultAdded(IEsptouchResult esptouchResult) {
+                    Log.d(TAG, "Received result: " + esptouchResult);
+                    if (!esptouchResult.isSuc()) {
+                        // TODO: Handle errors better. For that, I need to reproduce this error
+                        // and see what is sent to the Dart code first.
+                        final String msg = "Received unsuccessful result: " + esptouchResult;
+                        Log.e(TAG, msg);
+                        eventSink.error(msg, msg, null);
+                        return;
+                    }
 
+                    Map<String, String> result = new HashMap<>();
+                    result.put("bssid", esptouchResult.getBssid());
+                    result.put("ip", esptouchResult.getInetAddress().getHostAddress());
+                    eventSink.success(result);
+                }
+            });
+        }
         return mEsptouchTask.executeForResults(taskResultCount);
     }
+    @Override
+    protected void onProgressUpdate(IEsptouchResult... values) {
+        IEsptouchResult result = values[0];
+        Map<String, String> sink = new HashMap<>();
+        sink.put("bssid", result.getBssid());
+        sink.put("ip", result.getInetAddress().getHostAddress());
+        eventSink.success(sink);
+    }
+
 
     @Override
     protected void onPostExecute(List<IEsptouchResult> result) {
