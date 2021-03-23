@@ -11,9 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.app.Activity;
 import android.location.LocationManager;
 
 import androidx.core.content.ContextCompat;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +27,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
-
+import io.flutter.plugin.common.EventChannel;
+import io.flutter.plugin.common.EventChannel.EventSink;
 
 import com.espressif.iot.esptouch.EsptouchTask;
 import com.espressif.iot.esptouch.IEsptouchListener;
@@ -39,27 +42,35 @@ import com.espressif.iot.esptouch.util.ByteUtil;
 import com.espressif.iot.esptouch.util.TouchNetUtil;
 
 
-
-/** EsptouchSmartconfigPlugin */
+/**
+ * EsptouchSmartconfigPlugin
+ */
 public class EsptouchSmartconfigPlugin implements FlutterPlugin {
+    private EventChannel eventChannel;
+    private FlutterEventChannelHandler flutterEventChannelHandler;
+    private EventSink eventSink;
+    private MethodChannel methodChannel;
+    private static final String TAG = "esptouch_smartconfig";
+    private static final String TAG2 = "esptouch_smartconfig/result";
 
-  private MethodChannel methodChannel;
-  private static final String TAG = "esptouch_smartconfig";
+    @Override
+    public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+        setupChannels(flutterPluginBinding.getBinaryMessenger(), flutterPluginBinding.getApplicationContext());
 
-  @Override
-  public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-      setupChannels(flutterPluginBinding.getBinaryMessenger(), flutterPluginBinding.getApplicationContext());
+    }
 
-  }
-
-  @Override
-  public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-      methodChannel.setMethodCallHandler(null);
-      methodChannel = null;
-  }
+    @Override
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        methodChannel.setMethodCallHandler(null);
+        methodChannel = null;
+    }
 
     private void setupChannels(BinaryMessenger messenger, Context context) {
         methodChannel = new MethodChannel(messenger, TAG);
+        eventChannel = new EventChannel(messenger,TAG2);
+        FlutterEventChannelHandler flutterEventChannelHandler =
+                new FlutterEventChannelHandler(context, eventChannel);
+
 
         final WifiManager wifiManager =
                 (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -67,6 +78,8 @@ public class EsptouchSmartconfigPlugin implements FlutterPlugin {
 
         final FlutterMethodChannelHandeler methodChannelHandler =
                 new FlutterMethodChannelHandeler(wifiInfoFlutter);
+
+
         methodChannel.setMethodCallHandler(methodChannelHandler);
     }
 }

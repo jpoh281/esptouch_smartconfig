@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   permission_handler: ^6.1.1
+  connectivity: ^3.0.3
   esptouch_smartconfig:
     # When depending on this package from a real application you should use:
     #   esptouch_smartconfig: ^x.y.z
