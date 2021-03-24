@@ -4,8 +4,6 @@
 #include <ifaddrs.h>
 #include <arpa/inet.h>
 @implementation EsptouchSmartconfigPlugin
-
-
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
 
   FlutterMethodChannel* channel = [FlutterMethodChannel
@@ -44,7 +42,6 @@
 
 
 - (NSDictionary*)getWifiData {
-
     NSString* wifiName = [self findNetworkInfo:@"SSID"];
     NSString* bssid = [self findNetworkInfo:@"BSSID"];
     NSString* address = @"error";
