@@ -22,6 +22,17 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Used to Location's Info always for Using Beacon.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Used to Location's Info always for Using Beacon.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Used to Location's Info for Using Beacon when In Use.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -41,11 +52,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Used to Location&apos;s Info always for Using Beacon.</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Used to Location&apos;s Info always for Using Beacon.</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Used to Location&apos;s Info for Using Beacon when In Use.</string>
 </dict>
 </plist>

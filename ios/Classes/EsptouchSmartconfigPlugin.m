@@ -1,24 +1,30 @@
-#import "EsptouchSmartconfigPlugin.h"
 #import <CoreLocation/CoreLocation.h>
 #import "SystemConfiguration/CaptiveNetwork.h"
 #include <ifaddrs.h>
 #include <arpa/inet.h>
+#import "EsptouchSmartconfigPlugin.h"
+//#import "FlutterEventChannelHandler.h"
+
 @implementation EsptouchSmartconfigPlugin
+
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
 
   FlutterMethodChannel* channel = [FlutterMethodChannel
       methodChannelWithName:@"esptouch_smartconfig"
             binaryMessenger:[registrar messenger]];
 
-   //FlutterEventChannel* eventChannel = [FlutterEventChannel
-   //        eventChannelWithName:@"esptouch_smartconfig/result"
-   //             binaryMessenger:[registrar messenger]];
+  FlutterEventChannel* eventChannel = [FlutterEventChannel
+          eventChannelWithName:@"esptouch_smartconfig/result"
+               binaryMessenger:[registrar messenger]];
+
 
   EsptouchSmartconfigPlugin* instance = [[EsptouchSmartconfigPlugin alloc] init];
-
+    FlutterEventChannelHandler *resultsStreamHandler = [[FlutterEventChannelHandler alloc] init];
   [registrar addMethodCallDelegate:instance channel:channel];
+  [eventChannel setStreamHandler:resultsStreamHandler];
 }
 
+// <--- get wifi
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
   if ([@"getWifiData" isEqualToString:call.method]) {
     result([self getWifiData]);
@@ -40,7 +46,6 @@
   return info;
 }
 
-
 - (NSDictionary*)getWifiData {
     NSString* wifiName = [self findNetworkInfo:@"SSID"];
     NSString* bssid = [self findNetworkInfo:@"BSSID"];
@@ -48,7 +53,6 @@
       struct ifaddrs* interfaces = NULL;
       struct ifaddrs* temp_addr = NULL;
       int success = 0;
-
       // retrieve the current interfaces - returns 0 on success
       success = getifaddrs(&interfaces);
       if (success == 0) {
@@ -63,16 +67,101 @@
                   stringWithUTF8String:inet_ntoa(((struct sockaddr_in*)temp_addr->ifa_addr)->sin_addr)];
             }
           }
-
           temp_addr = temp_addr->ifa_next;
         }
       }
-
       // Free memory
       freeifaddrs(interfaces);
 
      NSDictionary* wifiData = @{@"wifiName":wifiName, @"bssid":bssid, @"ip":address};
   return wifiData;
 }
+// --->
+@end
+
+
+@implementation FlutterEventChannelHandler
+
+
+- (FlutterError *)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)eventSink {
+    NSDictionary *args = arguments;
+    NSString *bssid = args[@"bssid"];
+    NSString *ssid = args[@"ssid"];
+    NSString *password = args[@"password"];
+    NSString *deviceCount = args[@"deviceCount"];
+    NSString *broadcast = args[@"isBroad"];
+
+    EspTouchSmartConfig *smartConfig = [[EspTouchSmartConfig alloc]
+        initWithSSID:bssid
+              andBSSID:ssid
+          andPassword:password
+    andDeviceCount:deviceCount
+        withBroadcast:broadcast
+    ];
+    [smartConfig listen:eventSink];
+    self.smartConfig = smartConfig;
+    return nil;
+}
+
+- (FlutterError *)onCancelWithArguments:(id)arguments {
+    if (self.smartConfig != nil) {
+        [self.smartConfig cancel];
+    }
+    return nil;
+}
+
+@end
+
+@implementation EspTouchSmartConfig
+
+FlutterEventSink _eventSink;
+
+- (void)onEsptouchResultAddedWithResult:(ESPTouchResult *)result {
+    NSString *bssid = result.bssid;
+    NSString *ip = [ESP_NetUtil descriptionInetAddr4ByData:result.ipAddrData];
+    NSDictionary *resultDictionary = @{@"bssid": bssid, @"ip": ip};
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _eventSink(resultDictionary);
+    });
+}
+
+- (id)initWithSSID:(NSString *)ssid
+            andBSSID:(NSString *)bssid
+        andPassword:(NSString *)password
+  andDeviceCount:(NSString *)deviceCount
+      withBroadcast:(NSString *)isBroad {
+    self = [super init];
+    self.bssid = bssid;
+    self.ssid = ssid;
+    self.password = password;
+    self.deviceCount = [deviceCount intValue];
+    self.isBroad = [isBroad isEqualToString:@"YES"] ? YES : NO;
+    return self;
+}
+
+- (void)listen:(FlutterEventSink)eventSink {
+    _eventSink = eventSink;
+    [self._condition lock];
+    self._esptouchTask = [[ESPTouchTask alloc]initWithApSsid:self.ssid andApBssid:self.bssid andApPwd:self.password];
+    [self._esptouchTask setEsptouchDelegate:self];
+    [self._esptouchTask setPackageBroadcast:self.isBroad];
+    [self._condition unlock];
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{
+        NSArray *results =  [self._esptouchTask executeForResults:self.deviceCount];
+        NSLog(@"ESPViewController executeForResult() result is: %@", results);
+        _eventSink(FlutterEndOfEventStream);
+    });
+}
+
+- (void)cancel {
+    [self._condition lock];
+    if (self._esptouchTask != nil) {
+        [self._esptouchTask interrupt];
+    }
+    [self._condition unlock];
+
+}
+
 
 @end
