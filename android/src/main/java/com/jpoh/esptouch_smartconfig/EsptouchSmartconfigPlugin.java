@@ -47,8 +47,6 @@ import com.espressif.iot.esptouch.util.TouchNetUtil;
  */
 public class EsptouchSmartconfigPlugin implements FlutterPlugin {
     private EventChannel eventChannel;
-    private FlutterEventChannelHandler flutterEventChannelHandler;
-    private EventSink eventSink;
     private MethodChannel methodChannel;
     private static final String TAG = "esptouch_smartconfig";
     private static final String TAG2 = "esptouch_smartconfig/result";
