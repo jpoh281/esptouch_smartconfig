@@ -1,6 +1,6 @@
 import 'dart:async';
-
 import 'package:connectivity/connectivity.dart';
+import 'package:esptouch_smartconfig/esptouch_smartconfig.dart';
 import 'package:esptouch_smartconfig_example/wifi_page.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +10,6 @@ class ConnectivityPage extends StatefulWidget {
 }
 
 class _ConnectivityPageState extends State<ConnectivityPage> {
-
   late Connectivity _connectivity;
   late Stream<ConnectivityResult> _connectivityStream;
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
@@ -22,10 +21,8 @@ class _ConnectivityPageState extends State<ConnectivityPage> {
     super.initState();
     _connectivity = Connectivity();
     _connectivityStream = _connectivity.onConnectivityChanged;
-    _connectivitySubscription = _connectivityStream.listen((e){
-      setState(() {
-
-      });
+    _connectivitySubscription = _connectivityStream.listen((e) {
+      setState(() {});
     });
   }
 
@@ -44,21 +41,40 @@ class _ConnectivityPageState extends State<ConnectivityPage> {
         backgroundColor: Colors.red,
       ),
       body: FutureBuilder(
-        future: _connectivity.checkConnectivity(),
-        builder: (context, snapshot) {
-          if(!snapshot.hasData) return Center(
-            child: CircularProgressIndicator(),
-          );
-          else if(snapshot.data == ConnectivityResult.wifi)
-            return WifiPage();
-          else return Column(
-              children: [
-                Icon(Icons.wifi_off_sharp),
-                Text("No Wifi")
-              ],
-            );
-        }
-      ),
+          future: _connectivity.checkConnectivity(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData)
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            else if (snapshot.data == ConnectivityResult.wifi) {
+              return FutureBuilder<Map<String, String>?>(
+                  future: EsptouchSmartconfig.wifiData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return WifiPage(snapshot.data!['wifiName']!,
+                          snapshot.data!['bssid']!);
+                    } else
+                      return Container();
+                  });
+            } else
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.wifi_off_sharp,
+                      size: 200,
+                      color: Colors.red,
+                    ),
+                    Text(
+                      "No Wifi !!",
+                      style: TextStyle(fontSize: 40, color: Colors.red),
+                    )
+                  ],
+                ),
+              );
+          }),
     );
   }
 }

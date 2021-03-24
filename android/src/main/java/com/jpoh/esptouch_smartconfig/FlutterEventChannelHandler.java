@@ -68,25 +68,17 @@ public class FlutterEventChannelHandler implements EventChannel.StreamHandler {
         String bssid = (String) map.get("bssid");
         String password = (String) map.get("password");
         String deviceCount = (String) map.get("deviceCount");
+        String broadcast = (String) map.get("isBroad");
+
         Log.d(TAG, String.format("Received stream configuration arguments: SSID: %s, BBSID: %s, Password: %s", ssid, bssid, password));
         this.eventSink = new MainThreadEventSink(eventSink);
         esptouchAsyncTask = new EsptouchAsyncTask(context, this.eventSink);
-
-        esptouchAsyncTask.execute(ssid, bssid, password, deviceCount);
-
-
-//        // TODO(smaho): packet is a bool value, should pass it as such
-//        String packet = (String) map.get("packet");
-//        Map<String, Integer> taskParameterMap = (Map<String, Integer>) map.get("taskParameter");
-//        Log.d(TAG, String.format("Received stream configuration arguments: SSID: %s, BBSID: %s, Password: %s, Packet: %s, Task parameter: %s", ssid, bssid, password, packet, taskParameterMap));
-//        EsptouchTaskParameter taskParameter = buildTaskParameter(taskParameterMap);
-//        Log.d(TAG, String.format("Converted taskUtil parameter from map %s to EsptouchTaskParameter %s.", taskParameterMap, taskParameter));
-//        taskUtil = new EspTouchTaskUtil(context, ssid, bssid, password, packet.equals("1"), taskParameter);
-//        taskUtil.listen(eventSink);
+        esptouchAsyncTask.execute(ssid, bssid, password, deviceCount, broadcast);
     }
 
     @Override
     public void onCancel(Object o) {
         Log.d(TAG, "Cancelling stream with configuration arguments" + o);
+        esptouchAsyncTask.cancelEsptouch();
     }
 }

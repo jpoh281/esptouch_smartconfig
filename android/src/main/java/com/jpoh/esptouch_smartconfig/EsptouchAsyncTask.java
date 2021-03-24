@@ -42,25 +42,18 @@ import com.espressif.iot.esptouch.util.ByteUtil;
 import com.espressif.iot.esptouch.util.TouchNetUtil;
 
 public class EsptouchAsyncTask extends AsyncTask<String, IEsptouchResult, List<IEsptouchResult>> {
-//    private final WeakReference<EspTouchActivity> mActivity;
 private static final String TAG = "EspTouchAsyncTask";
     private final Object mLock = new Object();
     private Context context;
     private IEsptouchTask mEsptouchTask;
     MainThreadEventSink eventSink;
     EsptouchAsyncTask( Context context, MainThreadEventSink eventSink) {
-//            EspTouchActivity activity
     this.context = context;
     this.eventSink = eventSink;
-//        mActivity = new WeakReference<EspTouchActivity>(activity);
     }
 
     void cancelEsptouch() {
         cancel(true);
-//        EspTouchActivity activity = mActivity.get();
-//        if (activity != null) {
-//            activity.showProgress(false);
-//        }
         if (mEsptouchTask != null) {
             mEsptouchTask.interrupt();
         }
@@ -68,84 +61,58 @@ private static final String TAG = "EspTouchAsyncTask";
 
     @Override
     protected void onPreExecute() {
-//        EspTouchActivity activity = mActivity.get();
-//        activity.mBinding.testResult.setText("");
-//        activity.showProgress(true);
+
     }
 
     @Override
     protected List<IEsptouchResult> doInBackground(String... params) {
-//        EspTouchActivity activity = mActivity.get();
         int taskResultCount;
         synchronized (mLock) {
+            boolean broadcast = false;
             String apSsid = params[0];
             String apBssid = params[1];
             String apPassword = params[2];
             String deviceCountData = params[3];
-//           String broadcastData = params[4];
-            taskResultCount = deviceCountData.length() == 0 ? -1 : Integer.parseInt(deviceCountData);
-//            Context context = activity.getApplicationContext();
-            mEsptouchTask = new EsptouchTask(apSsid, apBssid, apPassword, context);
-            mEsptouchTask.setPackageBroadcast(true);
-            mEsptouchTask.setEsptouchListener(new IEsptouchListener() {
-                @Override
-                public void onEsptouchResultAdded(IEsptouchResult esptouchResult) {
-                    Log.d(TAG, "Received result: " + esptouchResult);
-                    if (!esptouchResult.isSuc()) {
-                        // TODO: Handle errors better. For that, I need to reproduce this error
-                        // and see what is sent to the Dart code first.
-                        final String msg = "Received unsuccessful result: " + esptouchResult;
-                        Log.e(TAG, msg);
-                        eventSink.error(msg, msg, null);
-                        return;
-                    }
+            String broadcastData = params[4];
+            Log.d(TAG, String.format("Received stream configuration arguments: SSID: %s, BBSID: %s, Password: %s, $s, $s", apSsid, apBssid, apPassword,deviceCountData,broadcastData));
+            if (broadcastData.equals("YES")) broadcast = true;
 
-                    Map<String, String> result = new HashMap<>();
-                    result.put("bssid", esptouchResult.getBssid());
-                    result.put("ip", esptouchResult.getInetAddress().getHostAddress());
-                    eventSink.success(result);
+            taskResultCount = deviceCountData.length() == 0 ? -1 : Integer.parseInt(deviceCountData);
+            mEsptouchTask = new EsptouchTask(apSsid, apBssid, apPassword, context);
+            mEsptouchTask.setPackageBroadcast(broadcast);
+            IEsptouchListener listener = new IEsptouchListener() {
+                @Override
+                public void onEsptouchResultAdded(IEsptouchResult result) {
+                    publishProgress(result);
                 }
-            });
+            };
+            mEsptouchTask.setEsptouchListener(listener);
         }
         return mEsptouchTask.executeForResults(taskResultCount);
     }
     @Override
-    protected void onProgressUpdate(IEsptouchResult... values) {
+    protected void onProgressUpdate(IEsptouchResult... values){
         IEsptouchResult result = values[0];
+        Log.d(TAG, "value" + values.length);
         Map<String, String> sink = new HashMap<>();
         sink.put("bssid", result.getBssid());
         sink.put("ip", result.getInetAddress().getHostAddress());
         eventSink.success(sink);
+        Log.d(TAG, "sinksink");
     }
 
 
     @Override
     protected void onPostExecute(List<IEsptouchResult> result) {
-//        EspTouchActivity activity = mActivity.get();
-//        activity.mTask = null;
-//        activity.showProgress(false);
         if (result == null) {
-            return;
-        }
 
-        // check whether the task is cancelled and no results received
-        IEsptouchResult firstResult = result.get(0);
-        if (firstResult.isCancelled()) {
-            return;
         }
-        // the task received some results including cancelled while
-        // executing before receiving enough results
+        Log.d(TAG, "End value" + result.size());
+        Map<String, String> sink = new HashMap<>();
+        sink.put("bssid", result.get(result.size()-1).getBssid());
+        sink.put("ip", result.get(result.size()-1).getInetAddress().getHostAddress());
+        eventSink.success(sink);
 
-        if (!firstResult.isSuc()) {
-            return;
-        }
-
-        ArrayList<CharSequence> resultMsgList = new ArrayList<>(result.size());
-//        for (IEsptouchResult touchResult : result) {
-//            String message = activity.getString(R.string.esptouch1_configure_result_success_item,
-//                    touchResult.getBssid(), touchResult.getInetAddress().getHostAddress());
-//            resultMsgList.add(message);
-//        }
-        CharSequence[] items = new CharSequence[resultMsgList.size()];
+        eventSink.endOfStream();
     }
 }

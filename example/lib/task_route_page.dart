@@ -1,15 +1,16 @@
 import 'dart:async';
-
 import 'package:esptouch_smartconfig/esp_touch_result.dart';
 import 'package:esptouch_smartconfig/esptouch_smartconfig.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class TaskRoute extends StatefulWidget {
-  // final Map<String, String> task;
-  //
-  // TaskRoute(this.task);
 
+  TaskRoute(this.ssid, this.bssid, this.password, this.deviceCount, this.isBroad);
+  final String ssid;
+  final String bssid;
+  final String password;
+  final String deviceCount;
+  final bool isBroad;
   @override
   State<StatefulWidget> createState() {
     return TaskRouteState();
@@ -23,7 +24,7 @@ class TaskRouteState extends State<TaskRoute> {
 
   @override
   void initState() {
-    _stream = EsptouchSmartconfig.run();
+    _stream = EsptouchSmartconfig.run(widget.ssid, widget.bssid, widget.password, widget.deviceCount, widget.isBroad);
     _streamSubscription = _stream!.listen((value) {
       list.add(value);
     });
@@ -43,10 +44,10 @@ class TaskRouteState extends State<TaskRoute> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
+            valueColor: AlwaysStoppedAnimation(Colors.red),
           ),
           SizedBox(height: 16),
-          Text('Waiting for results'),
+          Text('Waiting for results', style: TextStyle(fontSize: 24),),
         ],
       ),
     );
@@ -61,51 +62,49 @@ class TaskRouteState extends State<TaskRoute> {
     );
   }
 
-  copyValue(BuildContext context, String label, String v) {
-    return () {
-      Clipboard.setData(ClipboardData(text: v));
-      Scaffold.of(context).showSnackBar(
-          SnackBar(content: Text('Copied $label to clipboard: $v')));
-    };
-  }
+
 
   Widget noneState(BuildContext context) {
-    return Text('None');
+    return Center(child: Text('None', style: TextStyle(fontSize: 24),));
   }
 
-  Widget resultList(BuildContext context) {
-    return ListView.builder(
-      itemCount: _results.length,
-      itemBuilder: (_, index) {
-        final result = _results.toList(growable: false)[index];
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              GestureDetector(
-                onLongPress: copyValue(context, 'BSSID', result.bssid),
+  Widget resultList(BuildContext context, ConnectionState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: _results.length,
+            itemBuilder: (_, index) {
+              final result = _results.toList(growable: false)[index];
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Text('BSSID: ', style: Theme.of(context).textTheme.body2),
-                    Text(result.bssid,
-                        style: TextStyle(fontFamily: 'monospace')),
+                    Row(
+                      children: <Widget>[
+                        Text('BSSID: '),
+                        Text(result.bssid),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text('IP: '),
+                        Text(result.ip),
+                      ],
+                    )
                   ],
                 ),
-              ),
-              GestureDetector(
-                onLongPress: copyValue(context, 'IP', result.ip),
-                child: Row(
-                  children: <Widget>[
-                    Text('IP: ', style: Theme.of(context).textTheme.body2),
-                    Text(result.ip, style: TextStyle(fontFamily: 'monospace')),
-                  ],
-                ),
-              )
-            ],
+              );
+            },
           ),
-        );
-      },
+        ),
+        if(state == ConnectionState.active)
+          CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(Colors.red),
+          ),
+      ],
     );
   }
 
@@ -115,7 +114,11 @@ class TaskRouteState extends State<TaskRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task'),
+        leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: (){
+          Navigator.of(context).pop(_results);
+        }),
+        backgroundColor: Colors.red,
+        title: Text('Task',),
       ),
       body: Container(
         child: StreamBuilder<ESPTouchResult>(
@@ -123,22 +126,19 @@ class TaskRouteState extends State<TaskRoute> {
             if (snapshot.hasError) {
               return error(context, 'Error in StreamBuilder');
             }
-            if (!snapshot.hasData) {
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor:
-                  AlwaysStoppedAnimation(Theme.of(context).primaryColor),
-                ),
-              );
-            }
             switch (snapshot.connectionState) {
               case ConnectionState.active:
                 _results.add(snapshot.data!);
-                return resultList(context);
+                return resultList(context, ConnectionState.active);
               case ConnectionState.none:
                 return noneState(context);
               case ConnectionState.done:
-                return resultList(context);
+                if(_results.isNotEmpty) {
+                  _results.add(snapshot.data!);
+                  return resultList(context, ConnectionState.done);
+                }
+                else
+                  return noneState(context);
               case ConnectionState.waiting:
                 return waitingState(context);
             }

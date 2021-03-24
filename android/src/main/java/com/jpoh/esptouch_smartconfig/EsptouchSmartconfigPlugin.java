@@ -70,15 +70,12 @@ public class EsptouchSmartconfigPlugin implements FlutterPlugin {
         eventChannel = new EventChannel(messenger,TAG2);
         FlutterEventChannelHandler flutterEventChannelHandler =
                 new FlutterEventChannelHandler(context, eventChannel);
-
-
         final WifiManager wifiManager =
                 (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         final WifiInfoData wifiInfoFlutter = new WifiInfoData(wifiManager, context);
 
         final FlutterMethodChannelHandeler methodChannelHandler =
                 new FlutterMethodChannelHandeler(wifiInfoFlutter);
-
 
         methodChannel.setMethodCallHandler(methodChannelHandler);
     }

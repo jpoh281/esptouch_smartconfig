@@ -120,7 +120,6 @@ public class WifiInfoData {
    Map<String, String> getWifiData(){
         if(!checkPermissions()){
             return null;
-//            result.error("UNAVAILABLE", "Battery level not available.", null);
         }
         Map<String, String> returnData = new HashMap<String, String>();
         final android.net.wifi.WifiInfo wifiInfo = getWifiInfo();
@@ -149,7 +148,6 @@ public class WifiInfoData {
         returnData.put("ip", ip);
         Log.w(TAG,ip);
         return returnData;
-//        result.success(returnData);
     }
 
     private android.net.wifi.WifiInfo getWifiInfo() {

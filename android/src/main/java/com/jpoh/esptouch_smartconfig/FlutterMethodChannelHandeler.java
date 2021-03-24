@@ -50,11 +50,7 @@ import com.espressif.iot.esptouch.util.TouchNetUtil;
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case "getWifiData":
-//            Map<String, String> data = new HashMap<String, String>();
-//            data.putAll(
                 result.success(wifiInfoFlutter.getWifiData());
-//            Log.w(TAG,data.toString());
-//            result.success(data);
                 break;
             default:
                 result.notImplemented();
