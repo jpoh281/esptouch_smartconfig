@@ -1,15 +1,32 @@
 # esptouch_smartconfig
 
-A new Flutter plugin.
+Espressif’s ESP-TOUCH protocol implements the Smart Config technology to help users
+connect ESP8266EX- and ESP32-embedded devices (hereinafter referred to as the device)
+to a Wi-Fi network through simple configuration on a smartphone flutter app. 
+
+
 
 ## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+### Android
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Add Permission android/app/src/main/AndroidManifest.xml 
 
+```
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+```
+
+### iOS
+
+![image](https://user-images.githubusercontent.com/54665433/112471789-ab707800-8daf-11eb-9b44-c3fc00739e09.png)
+
+Add ios/Info.plist
+```
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>Used to Location's Info always for Using Beacon.</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>Used to Location's Info always for Using Beacon.</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Used to Location's Info for Using Beacon when In Use.</string>
+```
