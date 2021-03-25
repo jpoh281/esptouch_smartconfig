@@ -30,6 +30,7 @@
 	<string>Used to Location's Info for Using Beacon when In Use.</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>external-accessory</string>
 		<string>fetch</string>
 		<string>processing</string>
 	</array>

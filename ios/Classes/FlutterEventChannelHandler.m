@@ -1,6 +1,7 @@
 //
 // Created by jpoh on 3/24/21.
 //
+/*
 #import "FlutterEventChannelHandler.h"
 
 @implementation FlutterEventChannelHandler
@@ -19,12 +20,12 @@
     //BOOL packet = [args[@"packet"] isEqual:@"1"];
     //NSDictionary *taskParameterArgs = args[@"taskParameter"];
     //ESPTaskParameter *taskParameter = [self buildTaskParameter:taskParameterArgs];
-    EsptouchSmartConfig *smartConfig = [[EsptouchSmartConfig alloc]
-        initWithSSID:bssid
-              andBSSID:ssid
+    EspTouchSmartConfig *smartConfig = [[EspTouchSmartConfig alloc]
+        initWithSSID:ssid
+              andBSSID:bssid
           andPassword:password
-    andTaskParameters:taskParameter
-        withBroadcast:packet
+    andDeviceCount:deviceCount
+        withBroadcast:broadcast
     ];
     [smartConfig listen:eventSink];
     self.smartConfig = smartConfig;
@@ -39,3 +40,4 @@
 }
 
 @end
+*/

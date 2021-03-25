@@ -133,10 +133,10 @@ class TaskRouteState extends State<TaskRoute> {
               case ConnectionState.none:
                 return noneState(context);
               case ConnectionState.done:
-                if(_results.isNotEmpty) {
-                  _results.add(snapshot.data!);
-                  return resultList(context, ConnectionState.done);
-                }
+                  if(snapshot.hasData) {
+                    _results.add(snapshot.data!);
+                    return resultList(context, ConnectionState.done);
+                  }
                 else
                   return noneState(context);
               case ConnectionState.waiting:

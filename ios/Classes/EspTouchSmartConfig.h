@@ -1,6 +1,7 @@
 //
 // Created by jpoh on 3/24/21.
 //
+/*
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
 
@@ -13,7 +14,7 @@
 #import "ESPTouchTaskParameter.h"
 
 @interface EspTouchSmartConfig : NSObject <ESPTouchDelegate>
-
+@property(nonatomic, strong) NSCondition *_condition;
 @property(atomic, strong) ESPTouchTask *_esptouchTask;
 @property NSString *bssid;
 @property NSString *ssid;
@@ -32,3 +33,4 @@
 - (void)cancel;
 
 @end
+*/

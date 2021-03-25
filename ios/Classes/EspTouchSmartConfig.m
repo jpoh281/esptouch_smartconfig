@@ -1,6 +1,7 @@
 //
 // Created by jpoh on 3/24/21.
 //
+/*
 #include "EspTouchSmartConfig.h"
 // TODO(smaho): Double check which imports are actually needed
 
@@ -28,22 +29,22 @@ FlutterEventSink _eventSink;
     self.ssid = ssid;
     self.password = password;
     self.deviceCount = [deviceCount intValue];
-    self.isBroad = [category isEqualToString:@"YES"] ? YES : NO;
+    self.isBroad = [isBroad isEqualToString:@"YES"] ? YES : NO;
     return self;
 }
 
 - (void)listen:(FlutterEventSink)eventSink {
     _eventSink = eventSink;
     [self._condition lock];
-    self._esptouchTask = [[ESPTouchTask alloc]initWithApSsid:ssid andApBssid:bssid andApPwd:password];
+    self._esptouchTask = [[ESPTouchTask alloc]initWithApSsid:self.ssid andApBssid:self.bssid andApPwd:self.password];
     [self._esptouchTask setEsptouchDelegate:self];
     [self._esptouchTask setPackageBroadcast:self.isBroad];
     [self._condition unlock];
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        NSArray *results =  [self._esptouchTask executeForResults:deviceCount];
+        NSArray *results =  [self._esptouchTask executeForResults:self.deviceCount];
         NSLog(@"ESPViewController executeForResult() result is: %@", results);
-        _eventSink(FlutterEndOfEventStream)
+        _eventSink(FlutterEndOfEventStream);
     });
 }
 
@@ -57,3 +58,4 @@ FlutterEventSink _eventSink;
 
 
 @end
+*/

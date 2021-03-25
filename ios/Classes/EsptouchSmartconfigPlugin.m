@@ -79,39 +79,6 @@
 // --->
 @end
 
-
-@implementation FlutterEventChannelHandler
-
-
-- (FlutterError *)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)eventSink {
-    NSDictionary *args = arguments;
-    NSString *bssid = args[@"bssid"];
-    NSString *ssid = args[@"ssid"];
-    NSString *password = args[@"password"];
-    NSString *deviceCount = args[@"deviceCount"];
-    NSString *broadcast = args[@"isBroad"];
-
-    EspTouchSmartConfig *smartConfig = [[EspTouchSmartConfig alloc]
-        initWithSSID:bssid
-              andBSSID:ssid
-          andPassword:password
-    andDeviceCount:deviceCount
-        withBroadcast:broadcast
-    ];
-    [smartConfig listen:eventSink];
-    self.smartConfig = smartConfig;
-    return nil;
-}
-
-- (FlutterError *)onCancelWithArguments:(id)arguments {
-    if (self.smartConfig != nil) {
-        [self.smartConfig cancel];
-    }
-    return nil;
-}
-
-@end
-
 @implementation EspTouchSmartConfig
 
 FlutterEventSink _eventSink;
@@ -120,7 +87,7 @@ FlutterEventSink _eventSink;
     NSString *bssid = result.bssid;
     NSString *ip = [ESP_NetUtil descriptionInetAddr4ByData:result.ipAddrData];
     NSDictionary *resultDictionary = @{@"bssid": bssid, @"ip": ip};
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_current_queue(), ^{
         _eventSink(resultDictionary);
     });
 }
@@ -141,15 +108,26 @@ FlutterEventSink _eventSink;
 
 - (void)listen:(FlutterEventSink)eventSink {
     _eventSink = eventSink;
-    [self._condition lock];
-    self._esptouchTask = [[ESPTouchTask alloc]initWithApSsid:self.ssid andApBssid:self.bssid andApPwd:self.password];
-    [self._esptouchTask setEsptouchDelegate:self];
-    [self._esptouchTask setPackageBroadcast:self.isBroad];
-    [self._condition unlock];
+     [self._condition lock];
+     self._esptouchTask = [[ESPTouchTask alloc]initWithApSsid:self.ssid andApBssid:self.bssid andApPwd:self.password];
+     [self._esptouchTask setEsptouchDelegate:self];
+     [self._esptouchTask setPackageBroadcast:self.isBroad];
+     [self._condition unlock];
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        NSArray *results =  [self._esptouchTask executeForResults:self.deviceCount];
-        NSLog(@"ESPViewController executeForResult() result is: %@", results);
+        NSArray *results = [self._esptouchTask executeForResults:self.deviceCount];
+        NSLog(@"executeForResult() result is: %@", results);
+        /*
+        ESPTouchResult *firstResult = [results objectAtIndex:results.count - 1];
+        if(![firstResult isCancelled] && [firstResult bssid] != nil){
+            NSString *bssid = firstResult.bssid;
+            NSString *ip = [ESP_NetUtil descriptionInetAddr4ByData:firstResult.ipAddrData];
+            NSDictionary *resultDictionary = @{@"bssid": bssid, @"ip": ip};
+            dispatch_async(dispatch_get_current_queue(), ^{
+                _eventSink(resultDictionary);
+             });
+          }
+          */
         _eventSink(FlutterEndOfEventStream);
     });
 }
@@ -162,6 +140,37 @@ FlutterEventSink _eventSink;
     [self._condition unlock];
 
 }
+@end
 
+
+@implementation FlutterEventChannelHandler
+
+
+- (FlutterError *)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)eventSink {
+    NSDictionary *args = arguments;
+    NSString *bssid = args[@"bssid"];
+    NSString *ssid = args[@"ssid"];
+    NSString *password = args[@"password"];
+    NSString *deviceCount = args[@"deviceCount"];
+    NSString *broadcast = args[@"isBroad"];
+
+    EspTouchSmartConfig *smartConfig = [[EspTouchSmartConfig alloc]
+        initWithSSID:ssid
+              andBSSID:bssid
+          andPassword:password
+    andDeviceCount:deviceCount
+        withBroadcast:broadcast
+    ];
+    [smartConfig listen:eventSink];
+    self.smartConfig = smartConfig;
+    return nil;
+}
+
+- (FlutterError *)onCancelWithArguments:(id)arguments {
+    if (self.smartConfig != nil) {
+        [self.smartConfig cancel];
+    }
+    return nil;
+}
 
 @end
