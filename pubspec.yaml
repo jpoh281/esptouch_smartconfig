@@ -1,6 +1,6 @@
 name: esptouch_smartconfig
-description: A new Flutter plugin.
-version: 0.0.1
+description: Flutter ESP Touch Plugin.
+version: 0.0.2
 homepage: https://github.com/jpoh281/esptouch_smartconfig
 
 environment:
