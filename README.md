@@ -30,3 +30,14 @@ Add ios/Info.plist
 <key>NSLocationWhenInUseUsageDescription</key>
 <string>Used to Location's Info for Using Beacon when In Use.</string>
 ```
+
+## Reference
+
+### ESP Touch
+https://github.com/smaho-engineering/esptouch_flutter
+https://pub.dev/packages/smartconfig
+https://github.com/EspressifApp/EsptouchForIOS
+https://github.com/EspressifApp/EsptouchForAndroid
+
+### Wifi Info
+https://github.com/flutter/plugins
