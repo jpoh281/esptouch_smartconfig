@@ -35,7 +35,7 @@ Add ios/Info.plist
 
 ### ESP Touch
 https://github.com/smaho-engineering/esptouch_flutter </br>
-https://pub.dev/packages/smartconfig </br>
+https://github.com/kittenbot/flutter_smartconfig </br>
 https://github.com/EspressifApp/EsptouchForIOS </br>
 https://github.com/EspressifApp/EsptouchForAndroid </br>
 
