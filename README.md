@@ -34,10 +34,10 @@ Add ios/Info.plist
 ## Reference
 
 ### ESP Touch
-https://github.com/smaho-engineering/esptouch_flutter
-https://pub.dev/packages/smartconfig
-https://github.com/EspressifApp/EsptouchForIOS
-https://github.com/EspressifApp/EsptouchForAndroid
+https://github.com/smaho-engineering/esptouch_flutter </br>
+https://pub.dev/packages/smartconfig </br>
+https://github.com/EspressifApp/EsptouchForIOS </br>
+https://github.com/EspressifApp/EsptouchForAndroid </br>
 
 ### Wifi Info
 https://github.com/flutter/plugins
