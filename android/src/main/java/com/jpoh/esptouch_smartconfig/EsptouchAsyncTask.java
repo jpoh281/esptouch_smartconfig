@@ -94,25 +94,37 @@ private static final String TAG = "EspTouchAsyncTask";
     protected void onProgressUpdate(IEsptouchResult... values){
         IEsptouchResult result = values[0];
         Log.d(TAG, "value" + values.length);
+        Log.d(TAG, result.toString());
         Map<String, String> sink = new HashMap<>();
         sink.put("bssid", result.getBssid());
         sink.put("ip", result.getInetAddress().getHostAddress());
         eventSink.success(sink);
-        Log.d(TAG, "sinksink");
     }
 
 
     @Override
     protected void onPostExecute(List<IEsptouchResult> result) {
-        if (result == null) {
-
+        if (result != null) {
+            eventSink.endOfStream();
+            return;
         }
+
         Log.d(TAG, "End value" + result.size());
+        Log.d(TAG, "End data : " + result.get(result.size()-1).toString());
+        IEsptouchResult firstResult = result.get(result.size()-1);
+        if (firstResult.isCancelled()) {
+            eventSink.endOfStream();
+            return;
+        }
+        if (!firstResult.isSuc()){
+            eventSink.endOfStream();
+            return;
+        }
+
         Map<String, String> sink = new HashMap<>();
         sink.put("bssid", result.get(result.size()-1).getBssid());
         sink.put("ip", result.get(result.size()-1).getInetAddress().getHostAddress());
         eventSink.success(sink);
-
         eventSink.endOfStream();
     }
 }
