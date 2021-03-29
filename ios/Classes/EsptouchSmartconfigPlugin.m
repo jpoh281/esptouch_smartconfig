@@ -3,7 +3,6 @@
 #include <ifaddrs.h>
 #include <arpa/inet.h>
 #import "EsptouchSmartconfigPlugin.h"
-//#import "FlutterEventChannelHandler.h"
 
 @implementation EsptouchSmartconfigPlugin
 
