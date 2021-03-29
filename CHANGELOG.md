@@ -1,3 +1,6 @@
+## 0.0.3
+- Fix a bug that turns off in the event of a failed connection on an Android device
+
 ## 0.0.2+1
 - Update README.md
 
