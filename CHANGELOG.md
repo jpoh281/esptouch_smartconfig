@@ -1,5 +1,9 @@
-## 1.0.0
-publish
+## 0.0.2+1
+- Update README.md
+
+## 0.0.2
+- Fix a bug that turns off when Wi-Fi information is called without Wi-Fi connection
+- Update README.md
 
 ## 0.0.1
-make
+Initial Version

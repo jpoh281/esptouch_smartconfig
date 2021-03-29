@@ -1,8 +1,8 @@
 name: esptouch_smartconfig
-description: ESPTouch Flutter plugin
-version: 1.0.0
-author: jpoh281 <jpoh281@gmail.com>
-repository: https://github.com/jpoh281/esptouch_smartconfig
+description: Null-Safety Flutter ESP Touch Smart Config Plugin. Runs on android and iOS. ESP devices to connect target AP, the devices need run smart config.
+version: 0.0.2+1
+homepage: https://github.com/jpoh281/esptouch_smartconfig
+
 environment:
   sdk: ">=2.12.0 <3.0.0"
   flutter: ">=1.20.0"

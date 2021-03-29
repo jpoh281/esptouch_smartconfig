@@ -42,7 +42,7 @@
       info = networkInfo[key];
     }
   }
-  return info;
+  return (info == nil || [@"" isEqualToString:info]) ? @"" : info;
 }
 
 - (NSDictionary*)getWifiData {

@@ -4,8 +4,8 @@ import 'package:esptouch_smartconfig/esptouch_smartconfig.dart';
 import 'package:flutter/material.dart';
 
 class TaskRoute extends StatefulWidget {
-
-  TaskRoute(this.ssid, this.bssid, this.password, this.deviceCount, this.isBroad);
+  TaskRoute(
+      this.ssid, this.bssid, this.password, this.deviceCount, this.isBroad);
   final String ssid;
   final String bssid;
   final String password;
@@ -24,7 +24,8 @@ class TaskRouteState extends State<TaskRoute> {
 
   @override
   void initState() {
-    _stream = EsptouchSmartconfig.run(widget.ssid, widget.bssid, widget.password, widget.deviceCount, widget.isBroad);
+    _stream = EsptouchSmartconfig.run(widget.ssid, widget.bssid,
+        widget.password, widget.deviceCount, widget.isBroad);
     _streamSubscription = _stream!.listen((value) {
       list.add(value);
     });
@@ -47,7 +48,10 @@ class TaskRouteState extends State<TaskRoute> {
             valueColor: AlwaysStoppedAnimation(Colors.red),
           ),
           SizedBox(height: 16),
-          Text('Waiting for results', style: TextStyle(fontSize: 24),),
+          Text(
+            'Waiting for results',
+            style: TextStyle(fontSize: 24),
+          ),
         ],
       ),
     );
@@ -62,10 +66,12 @@ class TaskRouteState extends State<TaskRoute> {
     );
   }
 
-
-
   Widget noneState(BuildContext context) {
-    return Center(child: Text('None', style: TextStyle(fontSize: 24),));
+    return Center(
+        child: Text(
+      'None',
+      style: TextStyle(fontSize: 24),
+    ));
   }
 
   Widget resultList(BuildContext context, ConnectionState state) {
@@ -100,7 +106,7 @@ class TaskRouteState extends State<TaskRoute> {
             },
           ),
         ),
-        if(state == ConnectionState.active)
+        if (state == ConnectionState.active)
           CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation(Colors.red),
           ),
@@ -114,11 +120,15 @@ class TaskRouteState extends State<TaskRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: (){
-          Navigator.of(context).pop(_results);
-        }),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop(_results);
+            }),
         backgroundColor: Colors.red,
-        title: Text('Task',),
+        title: Text(
+          'Task',
+        ),
       ),
       body: Container(
         child: StreamBuilder<ESPTouchResult>(
@@ -133,11 +143,10 @@ class TaskRouteState extends State<TaskRoute> {
               case ConnectionState.none:
                 return noneState(context);
               case ConnectionState.done:
-                  if(snapshot.hasData) {
-                    _results.add(snapshot.data!);
-                    return resultList(context, ConnectionState.done);
-                  }
-                else
+                if (snapshot.hasData) {
+                  _results.add(snapshot.data!);
+                  return resultList(context, ConnectionState.done);
+                } else
                   return noneState(context);
               case ConnectionState.waiting:
                 return waitingState(context);
@@ -148,5 +157,4 @@ class TaskRouteState extends State<TaskRoute> {
       ),
     );
   }
-
 }

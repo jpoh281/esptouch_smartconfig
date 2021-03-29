@@ -28,12 +28,6 @@
 	<string>Used to Location's Info always for Using Beacon.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Used to Location's Info for Using Beacon when In Use.</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>external-accessory</string>
-		<string>fetch</string>
-		<string>processing</string>
-	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
