@@ -19,22 +19,16 @@ class TaskRoute extends StatefulWidget {
 
 class TaskRouteState extends State<TaskRoute> {
   late Stream<ESPTouchResult>? _stream;
-  late StreamSubscription<ESPTouchResult>? _streamSubscription;
-  List<ESPTouchResult> list = [];
 
   @override
   void initState() {
     _stream = EsptouchSmartconfig.run(widget.ssid, widget.bssid,
         widget.password, widget.deviceCount, widget.isBroad);
-    _streamSubscription = _stream!.listen((value) {
-      list.add(value);
-    });
     super.initState();
   }
 
   @override
   dispose() {
-    _streamSubscription?.cancel();
     super.dispose();
   }
 
@@ -132,6 +126,7 @@ class TaskRouteState extends State<TaskRoute> {
       ),
       body: Container(
         child: StreamBuilder<ESPTouchResult>(
+          stream: _stream,
           builder: (context, AsyncSnapshot<ESPTouchResult> snapshot) {
             if (snapshot.hasError) {
               return error(context, 'Error in StreamBuilder');
@@ -152,7 +147,6 @@ class TaskRouteState extends State<TaskRoute> {
                 return waitingState(context);
             }
           },
-          stream: _stream,
         ),
       ),
     );
