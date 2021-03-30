@@ -30,6 +30,61 @@ Add ios/Info.plist
 <key>NSLocationWhenInUseUsageDescription</key>
 <string>Used to Location's Info for Using Beacon when In Use.</string>
 ```
+## Usage
+```
+late Stream<ESPTouchResult>? _stream;
+ 
+@override
+  void initState() {
+    _stream = EsptouchSmartconfig.run(widget.ssid, widget.bssid,
+        widget.password, widget.deviceCount, widget.isBroadcast);
+    super.initState();
+  }
+  
+@override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop(_results);
+            }),
+        backgroundColor: Colors.red,
+        title: Text(
+          'Task',
+        ),
+      ),
+      body: Container(
+        child: StreamBuilder<ESPTouchResult>(
+          stream: _stream,
+          builder: (context, AsyncSnapshot<ESPTouchResult> snapshot) {
+            if (snapshot.hasError) {
+              return error(context, 'Error in StreamBuilder');
+            }
+            switch (snapshot.connectionState) {
+              case ConnectionState.active:
+                _results.add(snapshot.data!);
+                return resultList(context, ConnectionState.active);
+              case ConnectionState.none:
+                return noneState(context);
+              case ConnectionState.done:
+                if (snapshot.hasData) {
+                  _results.add(snapshot.data!);
+                  return resultList(context, ConnectionState.done);
+                } else
+                  return noneState(context);
+              case ConnectionState.waiting:
+                return waitingState(context);
+            }
+          },
+        ),
+      ),
+    );
+  } 
+
+```
+
 
 ## Reference
 
