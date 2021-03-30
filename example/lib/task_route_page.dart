@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 
 class TaskRoute extends StatefulWidget {
   TaskRoute(
-      this.ssid, this.bssid, this.password, this.deviceCount, this.isBroad);
+      this.ssid, this.bssid, this.password, this.deviceCount, this.isBroadcast);
   final String ssid;
   final String bssid;
   final String password;
   final String deviceCount;
-  final bool isBroad;
+  final bool isBroadcast;
   @override
   State<StatefulWidget> createState() {
     return TaskRouteState();
@@ -23,7 +23,7 @@ class TaskRouteState extends State<TaskRoute> {
   @override
   void initState() {
     _stream = EsptouchSmartconfig.run(widget.ssid, widget.bssid,
-        widget.password, widget.deviceCount, widget.isBroad);
+        widget.password, widget.deviceCount, widget.isBroadcast);
     super.initState();
   }
 
