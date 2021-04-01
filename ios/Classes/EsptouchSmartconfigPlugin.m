@@ -116,18 +116,8 @@ FlutterEventSink _eventSink;
     dispatch_async(queue, ^{
         NSArray *results = [self._esptouchTask executeForResults:self.deviceCount];
         NSLog(@"executeForResult() result is: %@", results);
-        /*
-        ESPTouchResult *firstResult = [results objectAtIndex:results.count - 1];
-        if(![firstResult isCancelled] && [firstResult bssid] != nil){
-            NSString *bssid = firstResult.bssid;
-            NSString *ip = [ESP_NetUtil descriptionInetAddr4ByData:firstResult.ipAddrData];
-            NSDictionary *resultDictionary = @{@"bssid": bssid, @"ip": ip};
-            dispatch_async(dispatch_get_current_queue(), ^{
-                _eventSink(resultDictionary);
-             });
-          }
-          */
-        _eventSink(FlutterEndOfEventStream);
+        if(_eventSink)
+            _eventSink(FlutterEndOfEventStream);
     });
 }
 
@@ -135,6 +125,7 @@ FlutterEventSink _eventSink;
     [self._condition lock];
     if (self._esptouchTask != nil) {
         [self._esptouchTask interrupt];
+        _eventSink = nil;
     }
     [self._condition unlock];
 
@@ -160,14 +151,18 @@ FlutterEventSink _eventSink;
     andDeviceCount:deviceCount
         withBroadcast:broadcast
     ];
-    [smartConfig listen:eventSink];
+
     self.smartConfig = smartConfig;
+    [self.smartConfig listen:eventSink];
+
     return nil;
 }
 
 - (FlutterError *)onCancelWithArguments:(id)arguments {
     if (self.smartConfig != nil) {
         [self.smartConfig cancel];
+        // need or not?
+        //self.smartConfig = nil;
     }
     return nil;
 }
