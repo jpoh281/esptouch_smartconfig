@@ -1,3 +1,6 @@
+## 0.0.5
+- Fix iOS User cannot retry bug
+
 ## 0.0.4
 - Update example
 - Update README.md
