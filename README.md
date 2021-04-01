@@ -33,7 +33,8 @@ Add ios/Info.plist
 ## Usage
 ```
 late Stream<ESPTouchResult>? _stream;
- 
+final Set<ESPTouchResult> _results = Set();
+
 @override
   void initState() {
     _stream = EsptouchSmartconfig.run(widget.ssid, widget.bssid,
