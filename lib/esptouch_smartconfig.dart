@@ -16,8 +16,8 @@ class EsptouchSmartconfig {
     return wifiMap;
   }
 
-  static Stream<ESPTouchResult>? run(String ssid, String bssid, String password,
-      String deviceCount, bool isBroad) {
+  static Stream<ESPTouchResult>? run({required String ssid,required String bssid,String password = "",
+      String deviceCount = "1", bool isBroad = true}) {
     print({});
     return _eventChannel.receiveBroadcastStream({
       'ssid': ssid,

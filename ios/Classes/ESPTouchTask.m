@@ -68,12 +68,12 @@
         perror("ESPTouchTask initWithApSsid() apSsid shouldn't be null or empty");
     }
     // the apSsid should be null or empty
-    assert(apSsid!=nil&&![apSsid isEqualToString:@""]);
+//    assert(apSsid!=nil&&![apSsid isEqualToString:@""]);
     if (apPwd == nil)
     {
         apPwd = @"";
     }
-    
+
     self = [super init];
     if (self)
     {
@@ -90,7 +90,7 @@
         }
         self._apBssid = [ESP_NetUtil parseBssid2bytes:apBssid];
         self._parameter = [[ESPTaskParameter alloc]init];
-        
+
         // check whether IPv4 and IPv6 is supported
         NSString *localInetAddr4 = [ESP_NetUtil getLocalIPv4];
         if (![ESP_NetUtil isIPv4PrivateAddr:localInetAddr4]) {
@@ -99,7 +99,7 @@
         NSString *localInetAddr6 = [ESP_NetUtil getLocalIPv6];
         [self._parameter setIsIPv4Supported:localInetAddr4!=nil];
         [self._parameter setIsIPv6Supported:localInetAddr6!=nil];
-        
+
         // create udp client and udp server
         self._client = [[ESPUDPSocketClient alloc]init];
         self._server = [[ESPUDPSocketServer alloc]initWithPort: [self._parameter getPortListening]
@@ -109,20 +109,20 @@
         if (DEBUG_ON) {
             NSLog(@"ESPTouchTask app server port is %d",self._server.port);
         }
-        
+
         if (localInetAddr4!=nil) {
             self._localInetAddrData = [ESP_NetUtil getLocalInetAddress4ByAddr:localInetAddr4];
         } else {
             int localPort = [self._parameter getPortListening];
             self._localInetAddrData = [ESP_NetUtil getLocalInetAddress6ByPort:localPort];
         }
-        
+
         if (DEBUG_ON)
         {
             // for ESPTouchGenerator only receive 4 bytes for local address no matter IPv4 or IPv6
             NSLog(@"ESPTouchTask executeForResult() localInetAddr: %@", [ESP_NetUtil descriptionInetAddr4ByData:self._localInetAddrData]);
         }
-        
+
         self._isSuc = NO;
         self._isInterrupt = NO;
         self._isWakeUp = NO;
@@ -372,12 +372,12 @@
     NSTimeInterval startTime = [[NSDate date] timeIntervalSince1970];
     NSTimeInterval currentTime = startTime;
     NSTimeInterval lastTime = currentTime - [self._parameter getTimeoutTotalCodeMillisecond];
-    
+
     NSArray *gcBytes2 = [generator getGCBytes2];
     NSArray *dcBytes2 = [generator getDCBytes2];
-    
+
     int index = 0;
-    
+
     while (!self._isInterrupt)
     {
         if (currentTime - lastTime >= [self._parameter getTimeoutTotalCodeMillisecond]/1000.0)
@@ -418,7 +418,7 @@
             break;
         }
     }
-    
+
     return self._isSuc;
 }
 
@@ -446,9 +446,9 @@
         expectTaskResultCount = INT32_MAX;
     }
     [self._parameter setExpectTaskResultCount:expectTaskResultCount];
-    
+
     [self __checkTaskValid];
-    
+
     // generator the esptouch byte[][] to be transformed, which will cost
     // some time(maybe a bit much)
     ESPTouchGenerator *generator = [[ESPTouchGenerator alloc]initWithSsid:self._apSsid andApBssid:self._apBssid andApPassword:self._apPwd andInetAddrData:self._localInetAddrData andIsSsidHidden:self._isSsidHidden];
@@ -463,13 +463,13 @@
             return [self __getEsptouchResultList];
         }
     }
-    
+
     if (!self._isInterrupt)
     {
         [self __sleep: [self._parameter getWaitUdpReceivingMillisecond]];
         [self __interrupt];
     }
-    
+
     return [self __getEsptouchResultList];
 }
 

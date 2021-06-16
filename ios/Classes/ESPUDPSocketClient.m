@@ -133,7 +133,7 @@
                      andInterval: (long) interval
 {
     // init socket parameters
-    bool isBroadcast = [targetHostName isEqualToString:@"255.255.255.255"];
+    bool isBroadcast = [targetHostName hasSuffix:@"255"];
     socklen_t addr_len;
     struct sockaddr_in target_addr;
     memset(&target_addr, 0, sizeof(target_addr));
@@ -194,14 +194,14 @@
     target_addr6.sin6_family = AF_INET6;
     target_addr6.sin6_port = htons(port);
     addr_len = sizeof(target_addr6);
-    
+
     NSString *portStr = [NSString stringWithFormat:@"%hu",(uint16_t)port];
     struct addrinfo *res0,hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET6;
     hints.ai_socktype = SOCK_DGRAM;
     hints.ai_protocol = IPPROTO_UDP;
-    
+
     int gai_error = getaddrinfo([targetHostName UTF8String], [portStr UTF8String], &hints, &res0);
     if (gai_error) {
         perror("client: gai_error, stop");
@@ -210,7 +210,7 @@
     NSData *dstData = [NSData dataWithBytes:res0->ai_addr length:res0->ai_addrlen];
     const void *dst = [dstData bytes];
     socklen_t dstSize = addr_len;
-    
+
     // send data gotten from the array
     for (NSUInteger i = offset; !self._isStop && i < offset + count; i++) {
         // get data
