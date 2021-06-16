@@ -97,3 +97,9 @@ https://github.com/EspressifApp/EsptouchForAndroid </br>
 
 ### Wifi Info
 https://github.com/flutter/plugins
+
+
+
+## Version
+### iOS Version v2.2.0
+### Android Version v2.0.0
