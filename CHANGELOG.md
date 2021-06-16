@@ -1,3 +1,7 @@
+## 0.0.6
+- iOS 14.5 UDP data sending bug fixed
+- EsptouchSmartconfig.run method Normal Parameter to Named Parameter
+
 ## 0.0.5
 - Fix iOS User cannot retry bug
 
