@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:esptouch_smartconfig/esptouch_smartconfig.dart';
 import 'package:esptouch_smartconfig_example/wifi_page.dart';
 import 'package:flutter/material.dart';
