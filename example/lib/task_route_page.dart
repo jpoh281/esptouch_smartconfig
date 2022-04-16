@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:esptouch_smartconfig/esp_touch_result.dart';
 import 'package:esptouch_smartconfig/esptouch_smartconfig.dart';
 import 'package:flutter/material.dart';
 
