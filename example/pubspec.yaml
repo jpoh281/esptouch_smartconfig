@@ -10,8 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  permission_handler: ^6.1.1
-  connectivity_plus: ^2.2.1
+  permission_handler: ^9.2.0
+  connectivity_plus: ^2.3.0
 
   #esptouch_smartconfig : ^0.0.2+1
 

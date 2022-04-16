@@ -14,6 +14,12 @@
       <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esptouch_smartconfig/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esptouch_smartconfig/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esptouch_smartconfig/build" />
+      <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esptouch_smartconfig/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esptouch_smartconfig/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esptouch_smartconfig/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esptouch_smartconfig/example/ios/.symlinks/plugins/esptouch_smartconfig/build" />
+      <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esptouch_smartconfig/example/ios/.symlinks/plugins/esptouch_smartconfig/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esptouch_smartconfig/example/ios/.symlinks/plugins/esptouch_smartconfig/.dart_tool" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Dart SDK" level="project" />

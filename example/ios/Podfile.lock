@@ -1,41 +1,41 @@
 PODS:
-  - connectivity (0.0.1):
+  - connectivity_plus (0.0.1):
     - Flutter
-    - Reachability
+    - ReachabilitySwift
   - esptouch_smartconfig (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - "permission_handler (5.1.0+2)":
+  - permission_handler_apple (9.0.4):
     - Flutter
-  - Reachability (3.2)
+  - ReachabilitySwift (5.0.0)
 
 DEPENDENCIES:
-  - connectivity (from `.symlinks/plugins/connectivity/ios`)
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - esptouch_smartconfig (from `.symlinks/plugins/esptouch_smartconfig/ios`)
   - Flutter (from `Flutter`)
-  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
 
 SPEC REPOS:
   trunk:
-    - Reachability
+    - ReachabilitySwift
 
 EXTERNAL SOURCES:
-  connectivity:
-    :path: ".symlinks/plugins/connectivity/ios"
+  connectivity_plus:
+    :path: ".symlinks/plugins/connectivity_plus/ios"
   esptouch_smartconfig:
     :path: ".symlinks/plugins/esptouch_smartconfig/ios"
   Flutter:
     :path: Flutter
-  permission_handler:
-    :path: ".symlinks/plugins/permission_handler/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
-  connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
-  esptouch_smartconfig: b00f74ccee79c0f06a379b0e5ee84787a709b18e
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
-  permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
-  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
+  esptouch_smartconfig: 72b35c84f8f62dfc6e70704864e6f210811b78dc
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
 
-PODFILE CHECKSUM: 438019746b23be4dfcf560dd065f24008264eeb2
+PODFILE CHECKSUM: c1b1b429dbcf9e64d09232cea00157cbd8f99942
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.11.2
