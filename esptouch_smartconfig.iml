@@ -21,6 +21,7 @@
       <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esptouch_smartconfig/example/ios/.symlinks/plugins/esptouch_smartconfig/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/example/ios/.symlinks/plugins/esptouch_smartconfig/example/ios/.symlinks/plugins/esptouch_smartconfig/.dart_tool" />
     </content>
+    <orderEntry type="jdk" jdkName="Android API 31 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Dart SDK" level="project" />
     <orderEntry type="library" name="Flutter Plugins" level="project" />
